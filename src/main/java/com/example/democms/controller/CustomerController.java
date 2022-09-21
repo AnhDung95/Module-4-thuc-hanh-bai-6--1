@@ -4,12 +4,15 @@ import com.example.democms.model.Customer;
 import com.example.democms.service.ICustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @Controller
@@ -20,15 +23,19 @@ public class CustomerController {
 
     @GetMapping("/create-customer")
     public ModelAndView showCreateForm() {
-        ModelAndView modelAndView = new ModelAndView("/customer/create");
-        modelAndView.addObject("customer", new Customer());
+        ModelAndView modelAndView = new ModelAndView("/customer/create", "customer", new Customer("", ""));
+//        modelAndView.addObject();
         return modelAndView;
     }
 
     @PostMapping("/create-customer")
-    public ModelAndView saveCustomer(@ModelAttribute("customer") Customer customer) {
-        customerService.save(customer);
+    public ModelAndView saveCustomer(@Valid @ModelAttribute("customer") Customer customer, BindingResult bindingResult) {
         ModelAndView modelAndView = new ModelAndView("/customer/create");
+        if(bindingResult.hasErrors()) {
+             modelAndView = new ModelAndView("/customer/create");
+             return modelAndView;
+        }
+        customerService.save(customer);
         modelAndView.addObject("customer", new Customer());
         modelAndView.addObject("message", "New customer created successfully");
         return modelAndView;

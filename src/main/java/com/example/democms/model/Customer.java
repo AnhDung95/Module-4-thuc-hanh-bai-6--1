@@ -4,6 +4,9 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 
     @Entity
     @Table(name = "customers")
@@ -12,6 +15,8 @@ import javax.persistence.*;
         @Id
         @GeneratedValue(strategy= GenerationType.AUTO)
         private Long id;
+        @NotBlank
+        @Pattern(regexp = "^[a-zA-Z]*",message = "Ten khach hang chi chua ky tu a-z hoac A-Z")
         private String firstName;
         private String lastName;
 
